@@ -7,14 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		867E49DB26A2953E00EA02FA /* MarvelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DA26A2953E00EA02FA /* MarvelManager.swift */; };
+		867E49DD26A2B8EA00EA02FA /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DC26A2B8EA00EA02FA /* Reachability.swift */; };
+		867E49E026A2BDCF00EA02FA /* MarvelCharacters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DF26A2BDCF00EA02FA /* MarvelCharacters.swift */; };
+		867E49E226A2E37700EA02FA /* CharacterSample.json in Resources */ = {isa = PBXBuildFile; fileRef = 867E49E126A2E37700EA02FA /* CharacterSample.json */; };
 		868D135826A207BB00E9E5D0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868D135726A207BB00E9E5D0 /* AppDelegate.swift */; };
 		868D135A26A207BB00E9E5D0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868D135926A207BB00E9E5D0 /* SceneDelegate.swift */; };
 		868D135C26A207BB00E9E5D0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868D135B26A207BB00E9E5D0 /* ViewController.swift */; };
 		868D135F26A207BB00E9E5D0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 868D135D26A207BB00E9E5D0 /* Main.storyboard */; };
-		868D136226A207BB00E9E5D0 /* MarvelCodingExercise.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 868D136026A207BB00E9E5D0 /* MarvelCodingExercise.xcdatamodeld */; };
+		868D136226A207BB00E9E5D0 /* Marvel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 868D136026A207BB00E9E5D0 /* Marvel.xcdatamodeld */; };
 		868D136426A207BE00E9E5D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 868D136326A207BE00E9E5D0 /* Assets.xcassets */; };
 		868D136726A207BE00E9E5D0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 868D136526A207BE00E9E5D0 /* LaunchScreen.storyboard */; };
 		868D137826A2094800E9E5D0 /* MCETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868D137726A2094800E9E5D0 /* MCETests.swift */; };
+		868D138126A2578300E9E5D0 /* MarvelResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868D138026A2578300E9E5D0 /* MarvelResponse.swift */; };
+		868D138326A25D8A00E9E5D0 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 868D138226A25D8A00E9E5D0 /* Keys.plist */; };
+		868D138526A25DE700E9E5D0 /* MarvelRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868D138426A25DE700E9E5D0 /* MarvelRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,6 +35,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		867E49DA26A2953E00EA02FA /* MarvelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelManager.swift; sourceTree = "<group>"; };
+		867E49DC26A2B8EA00EA02FA /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		867E49DF26A2BDCF00EA02FA /* MarvelCharacters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharacters.swift; sourceTree = "<group>"; };
+		867E49E126A2E37700EA02FA /* CharacterSample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CharacterSample.json; sourceTree = "<group>"; };
 		868D135426A207BB00E9E5D0 /* MarvelCodingExercise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MarvelCodingExercise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		868D135726A207BB00E9E5D0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		868D135926A207BB00E9E5D0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -40,6 +51,9 @@
 		868D137526A2094800E9E5D0 /* MCETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MCETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		868D137726A2094800E9E5D0 /* MCETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCETests.swift; sourceTree = "<group>"; };
 		868D137926A2094800E9E5D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		868D138026A2578300E9E5D0 /* MarvelResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelResponse.swift; sourceTree = "<group>"; };
+		868D138226A25D8A00E9E5D0 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
+		868D138426A25DE700E9E5D0 /* MarvelRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +74,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		867E49DE26A2B8EF00EA02FA /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				867E49DC26A2B8EA00EA02FA /* Reachability.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
 		868D134B26A207BB00E9E5D0 = {
 			isa = PBXGroup;
 			children = (
@@ -86,8 +108,10 @@
 				868D137026A208B900E9E5D0 /* Model */,
 				868D136E26A2088600E9E5D0 /* View */,
 				868D136F26A208B000E9E5D0 /* Controller */,
+				867E49DE26A2B8EF00EA02FA /* Utility */,
 				868D136326A207BE00E9E5D0 /* Assets.xcassets */,
 				868D136826A207BE00E9E5D0 /* Info.plist */,
+				868D138226A25D8A00E9E5D0 /* Keys.plist */,
 			);
 			path = MarvelCodingExercise;
 			sourceTree = "<group>";
@@ -112,7 +136,12 @@
 		868D137026A208B900E9E5D0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				868D136026A207BB00E9E5D0 /* MarvelCodingExercise.xcdatamodeld */,
+				867E49E126A2E37700EA02FA /* CharacterSample.json */,
+				867E49DF26A2BDCF00EA02FA /* MarvelCharacters.swift */,
+				867E49DA26A2953E00EA02FA /* MarvelManager.swift */,
+				868D138426A25DE700E9E5D0 /* MarvelRequest.swift */,
+				868D138026A2578300E9E5D0 /* MarvelResponse.swift */,
+				868D136026A207BB00E9E5D0 /* Marvel.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -207,8 +236,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				868D138326A25D8A00E9E5D0 /* Keys.plist in Resources */,
 				868D136726A207BE00E9E5D0 /* LaunchScreen.storyboard in Resources */,
 				868D136426A207BE00E9E5D0 /* Assets.xcassets in Resources */,
+				867E49E226A2E37700EA02FA /* CharacterSample.json in Resources */,
 				868D135F26A207BB00E9E5D0 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -248,9 +279,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				868D136226A207BB00E9E5D0 /* MarvelCodingExercise.xcdatamodeld in Sources */,
+				868D136226A207BB00E9E5D0 /* Marvel.xcdatamodeld in Sources */,
+				867E49E026A2BDCF00EA02FA /* MarvelCharacters.swift in Sources */,
+				868D138526A25DE700E9E5D0 /* MarvelRequest.swift in Sources */,
 				868D135C26A207BB00E9E5D0 /* ViewController.swift in Sources */,
 				868D135826A207BB00E9E5D0 /* AppDelegate.swift in Sources */,
+				867E49DB26A2953E00EA02FA /* MarvelManager.swift in Sources */,
+				868D138126A2578300E9E5D0 /* MarvelResponse.swift in Sources */,
+				867E49DD26A2B8EA00EA02FA /* Reachability.swift in Sources */,
 				868D135A26A207BB00E9E5D0 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -522,13 +558,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		868D136026A207BB00E9E5D0 /* MarvelCodingExercise.xcdatamodeld */ = {
+		868D136026A207BB00E9E5D0 /* Marvel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
 				868D136126A207BB00E9E5D0 /* MarvelCodingExercise.xcdatamodel */,
 			);
 			currentVersion = 868D136126A207BB00E9E5D0 /* MarvelCodingExercise.xcdatamodel */;
-			path = MarvelCodingExercise.xcdatamodeld;
+			path = Marvel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
