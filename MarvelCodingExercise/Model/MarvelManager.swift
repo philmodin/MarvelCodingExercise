@@ -7,25 +7,53 @@
 
 import Foundation
 
-// respond with character data
-
-// check with CoreData for character
-
-// request character from Marvel
-
 class MarvelManager: NSObject {
     
-    private let marvelCharacters = MarvelCharacters()
-    private let marvelRequest = MarvelRequest()
+    let marvelCache = MarvelCache()
+    let marvelRequest = MarvelRequest()
+    
     private var reachabilityCurrent: Reachability?
     private var reachabilityPrevious: Reachability.Connection?
     
+    typealias MarvelCharacter = MarvelResponse.Container.Character
+
+    override init() {
+        super.init()
+        reachabilityStart()
+    }
     deinit { reachabilityStop() }
 }
 
 // MARK: - Provide character data
 extension MarvelManager {
+
+    func character(for query: String? = nil, on row: Int, completion: @escaping (CharacterMO?) -> Void) {
+        
+        if reachabilityCurrent?.connection == .unavailable {
+            completion(marvelCache.characters[row])
+        } else {
+            marvelRequest.character(searching: query, at: row) { [weak self] mChar in
+                if let charMO = self?.marvelCache.fetchFirst(with: mChar?.id) {
+                    completion(charMO)
+                } else {
+                    self?.marvelRequest.image(for: mChar) { [weak self] imageData in
+                        self?.createCharacterMO(from: mChar, with: imageData)
+                        completion(self?.marvelCache.fetchFirst(with: mChar?.id))
+                    }
+                }
+            }
+        }
+    }
     
+    func createCharacterMO(from mChar: MarvelCharacter?, with image: Data? = nil) {
+        marvelCache.addNewCharacter(
+            with: mChar?.id,
+            name: mChar?.name,
+            description: mChar?.description,
+            modified: mChar?.modifiedDate,
+            image: image, urls: mChar?.urls
+        )
+    }
 }
 
 // MARK: - Check internet connectivity via Reachability

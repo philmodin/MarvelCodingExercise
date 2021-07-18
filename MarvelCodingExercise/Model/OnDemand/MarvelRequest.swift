@@ -22,42 +22,56 @@ struct MarvelRequest {
         hash = hashMD5(from: timestamp + privateKey + publicKey)
     }
     
-    typealias resultForCharacter = Result<MarvelResponse.Container.Character?, Error>
-    typealias resultForImage = Result<UIImage, Error>
-    typealias resultForMarvel = Result<MarvelResponse, Error>
+    typealias MarvelCharacter = MarvelResponse.Container.Character
+//    typealias ResultForCharacter = Result<MarvelResponse.Container.Character?, Error>
+    typealias ResultForMarvel = Result<MarvelResponse, Error>
 }
 
 // MARK: - Get character, image
 extension MarvelRequest {
     
-    func character(searching query: String = "", at offset: Int = 0, completion: @escaping (resultForCharacter) -> Void) {
-        guard let url = makeURL(searching: query, offset: offset)
-        else {
-            completion(.failure(MarvelError.badURL))
-            return
-        }
+    func character(searching query: String? = nil, at offset: Int, completion: @escaping (MarvelCharacter?) -> Void) {
+        let url = makeURL(searching: query, offset: offset)
+        
         getData(at: url) { result in
+            
             switch result {
-            case .failure(let error): completion(.failure(error))
+            case .failure(let error):
+                print(error)
+                completion(nil)
             case .success(let data) :
-                decode(data) { result in
+                print(data)
+                decode(marvel: data) { result in
+                    
                     switch result {
-                    case.failure(let error): completion(.failure(error))
-                    case.success(let response): completion(.success(response.data?.results?.first))
+                    case.failure(let error):
+                        print(error)
+                        completion(nil)
+                    case.success(let response):
+                        completion(response.data?.results?.first)
                     }
                 }
             }
         }
     }
     
-    func image(at url: URL, completion: @escaping (resultForImage) -> Void) {
-        getData(at: url) { result in
-            switch result {
-            case.failure(let error): completion(.failure(error))
-            case.success(let data): completion(.success(decode(data)))
+    func image(for character: MarvelCharacter?, completion: @escaping (Data?) -> Void) {
+        guard
+            let path = character?.thumbnail?.path,
+            let extention = character?.thumbnail?.extension,
+            let url = URL(string: path + extention)
+        else {
+            completion(nil)
+            return
+        }
+        getData(at: url) { dataResult in
+            switch dataResult {
+            case.failure(_): completion(nil)
+            case.success(let data): completion(data)
             }
         }
     }
+
 }
 
 // MARK: - Get url, data, and decode
@@ -69,7 +83,7 @@ extension MarvelRequest {
         case badURL
     }
 
-    private func makeURL(searching query: String, offset: Int) -> URL? {
+    private func makeURL(searching query: String? = nil, offset: Int) -> URL? {
         var components = URLComponents()
             components.scheme = "https"
             components.host = host
@@ -82,14 +96,18 @@ extension MarvelRequest {
                 URLQueryItem(name: "offset", value: String(offset)),
             ]
         
-        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !trimmedQuery.isEmpty {
+        if let trimmedQuery = query?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmedQuery.isEmpty {
             components.queryItems?.append(URLQueryItem(name: "nameStartsWith", value: trimmedQuery))
         }
         return components.url
     }
     
-    private func getData(at url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
+    func getData(at url: URL?, completion: @escaping (Result<Data, Error>) -> Void) {
+        guard let url = url
+        else {
+            completion(.failure(MarvelError.badURL))
+            return
+        }
         URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data = data
             else {
@@ -102,7 +120,7 @@ extension MarvelRequest {
         }.resume()
     }
     
-    private func decode(_ data: Data, completion: @escaping (resultForMarvel) -> Void) {
+    func decode(marvel data: Data, completion: @escaping (ResultForMarvel) -> Void) {
         do {
             let response = try JSONDecoder().decode(MarvelResponse.self, from: data)
             if response.code != 200 {
@@ -117,13 +135,7 @@ extension MarvelRequest {
             }
         }
     }
-    
-    private func decode(_ data: Data) -> UIImage {
-        if let image = UIImage(data: data) {
-            return image
-        }
-        return UIImage() //TODO return placeholder
-    }
+
 }
 
 // MARK: - Get api keys for init

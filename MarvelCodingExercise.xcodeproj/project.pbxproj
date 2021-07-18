@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		867E49DB26A2953E00EA02FA /* MarvelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DA26A2953E00EA02FA /* MarvelManager.swift */; };
 		867E49DD26A2B8EA00EA02FA /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DC26A2B8EA00EA02FA /* Reachability.swift */; };
-		867E49E026A2BDCF00EA02FA /* MarvelCharacters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DF26A2BDCF00EA02FA /* MarvelCharacters.swift */; };
+		867E49E026A2BDCF00EA02FA /* MarvelCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DF26A2BDCF00EA02FA /* MarvelCache.swift */; };
 		867E49E226A2E37700EA02FA /* CharacterSample.json in Resources */ = {isa = PBXBuildFile; fileRef = 867E49E126A2E37700EA02FA /* CharacterSample.json */; };
 		868D135826A207BB00E9E5D0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868D135726A207BB00E9E5D0 /* AppDelegate.swift */; };
 		868D135A26A207BB00E9E5D0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868D135926A207BB00E9E5D0 /* SceneDelegate.swift */; };
@@ -37,7 +37,7 @@
 /* Begin PBXFileReference section */
 		867E49DA26A2953E00EA02FA /* MarvelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelManager.swift; sourceTree = "<group>"; };
 		867E49DC26A2B8EA00EA02FA /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
-		867E49DF26A2BDCF00EA02FA /* MarvelCharacters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharacters.swift; sourceTree = "<group>"; };
+		867E49DF26A2BDCF00EA02FA /* MarvelCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCache.swift; sourceTree = "<group>"; };
 		867E49E126A2E37700EA02FA /* CharacterSample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CharacterSample.json; sourceTree = "<group>"; };
 		868D135426A207BB00E9E5D0 /* MarvelCodingExercise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MarvelCodingExercise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		868D135726A207BB00E9E5D0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -80,6 +80,25 @@
 				867E49DC26A2B8EA00EA02FA /* Reachability.swift */,
 			);
 			path = Utility;
+			sourceTree = "<group>";
+		};
+		867E49E326A39E0800EA02FA /* OnDisk */ = {
+			isa = PBXGroup;
+			children = (
+				867E49E126A2E37700EA02FA /* CharacterSample.json */,
+				868D136026A207BB00E9E5D0 /* Marvel.xcdatamodeld */,
+				867E49DF26A2BDCF00EA02FA /* MarvelCache.swift */,
+			);
+			path = OnDisk;
+			sourceTree = "<group>";
+		};
+		867E49E426A39E1700EA02FA /* OnDemand */ = {
+			isa = PBXGroup;
+			children = (
+				868D138426A25DE700E9E5D0 /* MarvelRequest.swift */,
+				868D138026A2578300E9E5D0 /* MarvelResponse.swift */,
+			);
+			path = OnDemand;
 			sourceTree = "<group>";
 		};
 		868D134B26A207BB00E9E5D0 = {
@@ -136,12 +155,9 @@
 		868D137026A208B900E9E5D0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				867E49E126A2E37700EA02FA /* CharacterSample.json */,
-				867E49DF26A2BDCF00EA02FA /* MarvelCharacters.swift */,
 				867E49DA26A2953E00EA02FA /* MarvelManager.swift */,
-				868D138426A25DE700E9E5D0 /* MarvelRequest.swift */,
-				868D138026A2578300E9E5D0 /* MarvelResponse.swift */,
-				868D136026A207BB00E9E5D0 /* Marvel.xcdatamodeld */,
+				867E49E326A39E0800EA02FA /* OnDisk */,
+				867E49E426A39E1700EA02FA /* OnDemand */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -280,7 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				868D136226A207BB00E9E5D0 /* Marvel.xcdatamodeld in Sources */,
-				867E49E026A2BDCF00EA02FA /* MarvelCharacters.swift in Sources */,
+				867E49E026A2BDCF00EA02FA /* MarvelCache.swift in Sources */,
 				868D138526A25DE700E9E5D0 /* MarvelRequest.swift in Sources */,
 				868D135C26A207BB00E9E5D0 /* ViewController.swift in Sources */,
 				868D135826A207BB00E9E5D0 /* AppDelegate.swift in Sources */,

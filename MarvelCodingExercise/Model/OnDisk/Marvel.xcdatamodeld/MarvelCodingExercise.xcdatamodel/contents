@@ -3,7 +3,7 @@
     <entity name="Character" representedClassName="CharacterMO" syncable="YES" codeGenerationType="class">
         <attribute name="bio" optional="YES" attributeType="String"/>
         <attribute name="fetched" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>

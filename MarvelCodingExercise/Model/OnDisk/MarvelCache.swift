@@ -1,5 +1,5 @@
 //
-//  MarvelCharacters.swift
+//  MarvelCache.swift
 //  MarvelCodingExercise
 //
 //  Created by endOfLine on 7/17/21.
@@ -8,7 +8,7 @@
 import CoreData
 import UIKit
 
-class MarvelCharacters: NSObject {
+class MarvelCache: NSObject {
     
     var persistentContainer: NSPersistentContainer!
     var context: NSManagedObjectContext!
@@ -17,48 +17,77 @@ class MarvelCharacters: NSObject {
         super.init()
         persistentContainer = makeContainer()
         context = persistentContainer.viewContext
+        fetch()
     }
     
     typealias MarvelCharacter = MarvelResponse.Container.Character
         
-    var characters: [CharacterMO] = []
+    private(set) var characters: [CharacterMO] = []
         
 }
 
 // MARK: - Manipulate persistent data
-extension MarvelCharacters {
+extension MarvelCache {
     
-    func fetch() {
+    private func fetch() {
         let request: NSFetchRequest<CharacterMO> = CharacterMO.fetchRequest()
         let sort = NSSortDescriptor(key: #keyPath(CharacterMO.name), ascending: true)
         request.sortDescriptors = [sort]
         do {
             characters = try context.fetch(request)
         } catch {
+            characters = []
             print(error.localizedDescription)
         }
     }
     
-    func add(new character: MarvelCharacter, with image: Data?) {
-        let newCharacter = CharacterMO(context: context)
-        newCharacter.id = UUID(uuidString: String(character.id ?? 0))
-        newCharacter.fetched = Date()
-        newCharacter.name = character.name
-        newCharacter.bio = character.description
-        newCharacter.modified = character.modifiedDate
-        newCharacter.image = image
-        if let urls = character.urls { newCharacter.urls = NSSet(array: urls) }
-        saveContext()
+    func fetchFirst(with id: Int64?) -> CharacterMO? {
+        guard let id = id
+        else { return nil }
+        
+        let request: NSFetchRequest<CharacterMO> = CharacterMO.fetchRequest()
+        request.predicate = NSPredicate(format: "(id = %d)", id)
+        var character: CharacterMO? = nil
+        do {
+            character = try context.fetch(request).first
+        } catch {
+            print(error.localizedDescription)
+        }
+        return character
     }
     
-    func update(_ existing: CharacterMO, with updated: MarvelCharacter) {
-        existing.name = updated.name
-        // TODO: finish updating
+    func addNewCharacter(with id: Int64?, name: String?, description: String?, modified: Date?, image: Data?, urls: [MarvelCharacter.URL]?) {
+        guard let id = id
+        else { return }
+        
+        let newCharacter = CharacterMO(context: context)
+        newCharacter.id = id
+        newCharacter.fetched = Date()
+        newCharacter.name = name
+        newCharacter.bio = description
+        newCharacter.modified = modified
+        newCharacter.image = image
+        if let urls = urls {
+            for url in urls {
+                if let urlString = url.url, let type = url.type {
+                    let urlMO = UrlMO(context: context)
+                    urlMO.url = URL(string: urlString)
+                    urlMO.type = type
+                    newCharacter.addToUrls(urlMO)
+                }
+            }
+        }
+        save()
+    }
+    
+    func save() {
+        saveContext()
+        fetch()
     }
     
 }
 // MARK: - Core Data stack
-extension MarvelCharacters {
+extension MarvelCache {
     
     func makeContainer() -> NSPersistentContainer {
         /*
