@@ -29,7 +29,7 @@ class MarvelCache: NSObject {
 // MARK: - Manipulate persistent data
 extension MarvelCache {
     
-    private func fetch() {
+    func fetch() {
         let request: NSFetchRequest<CharacterMO> = CharacterMO.fetchRequest()
         let sort = NSSortDescriptor(key: #keyPath(CharacterMO.name), ascending: true)
         request.sortDescriptors = [sort]
@@ -89,7 +89,7 @@ extension MarvelCache {
 // MARK: - Core Data stack
 extension MarvelCache {
     
-    func makeContainer() -> NSPersistentContainer {
+    private func makeContainer() -> NSPersistentContainer {
         /*
          The persistent container for the application. This implementation
          creates and returns a container, having loaded the store for the
@@ -116,7 +116,7 @@ extension MarvelCache {
         return container
     }
 
-    func saveContext () {
+    private func saveContext () {
         if context.hasChanges {
             do {
                 try context.save()

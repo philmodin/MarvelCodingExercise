@@ -7,45 +7,76 @@
 
 import Foundation
 
-class MarvelManager: NSObject {
+typealias MarvelCharacter = MarvelResponse.Container.Character
+typealias MarvelCharacterTotal = Int
+typealias ResultForMarvel = Result<MarvelResponse, Error>
+
+class MarvelManager {
     
-    let marvelCache = MarvelCache()
-    let marvelRequest = MarvelRequest()
+    private let marvelCache = MarvelCache()
+    private let marvelRequest = MarvelRequest()
+    
+    init() {
+        reachabilityStart()
+    }
+    deinit {
+        reachabilityStop()
+    }
+    
+    private var searchQuery: String?
+    private var searchPriority = 0
     
     private var reachabilityCurrent: Reachability?
     private var reachabilityPrevious: Reachability.Connection?
     
-    typealias MarvelCharacter = MarvelResponse.Container.Character
-
-    override init() {
-        super.init()
-        reachabilityStart()
-    }
-    deinit { reachabilityStop() }
+    private(set) var total: MarvelCharacterTotal?
+    private(set) var characters = [Int: CharacterMO]()
+        
 }
-
 // MARK: - Provide character data
 extension MarvelManager {
-
-    func character(for query: String? = nil, on row: Int, completion: @escaping (CharacterMO?) -> Void) {
+    
+    func getCharacterCount(searching: String? = nil, completed: @escaping () -> Void) {
+        total = nil
+        characters = [:]
         
-        if reachabilityCurrent?.connection == .unavailable {
-            completion(marvelCache.characters[row])
+        searchQuery = searching
+        searchPriority += 1
+        
+        marvelRequest.total(searching: searchQuery) { [weak self] count in
+            self?.total = count
+            completed()
+        }
+    }
+    
+    func getCharacter(for row: Int, completed: @escaping () -> Void) {
+        if characters[row] != nil {
+            completed()
         } else {
-            marvelRequest.character(searching: query, at: row) { [weak self] mChar in
-                if let charMO = self?.marvelCache.fetchFirst(with: mChar?.id) {
-                    completion(charMO)
+            marvelRequest.character(searching: searchQuery, at: row) { [weak self] mChar  in
+                if let characterMO = self?.marvelCache.fetchFirst(with: mChar?.id) {
+                    self?.characters.merge([row : characterMO]) { _, new in new }
+                    completed()
                 } else {
                     self?.marvelRequest.image(for: mChar) { [weak self] imageData in
                         self?.createCharacterMO(from: mChar, with: imageData)
-                        completion(self?.marvelCache.fetchFirst(with: mChar?.id))
+                        if let characterMO = self?.marvelCache.fetchFirst(with: mChar?.id) {
+                            self?.characters.merge([row : characterMO]) { _, new in new }
+                            completed()
+                        } else {
+                            completed()
+                        }
                     }
                 }
             }
         }
     }
     
-    func createCharacterMO(from mChar: MarvelCharacter?, with image: Data? = nil) {
+    func deleteAll() {
+        marvelCache.flushContext()
+    }
+    
+    private func createCharacterMO(from mChar: MarvelCharacter?, with image: Data? = nil) {
         marvelCache.addNewCharacter(
             with: mChar?.id,
             name: mChar?.name,
@@ -55,7 +86,6 @@ extension MarvelManager {
         )
     }
 }
-
 // MARK: - Check internet connectivity via Reachability
 extension MarvelManager {
     @objc

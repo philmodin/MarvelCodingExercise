@@ -6,7 +6,7 @@
 //
 
 import CryptoKit
-import UIKit
+import Foundation
 
 struct MarvelRequest {
     let host = "gateway.marvel.com"
@@ -20,17 +20,13 @@ struct MarvelRequest {
         let privateKey = getApiKey(for: .privateKey)
         apiKey = publicKey
         hash = hashMD5(from: timestamp + privateKey + publicKey)
-    }
-    
-    typealias MarvelCharacter = MarvelResponse.Container.Character
-//    typealias ResultForCharacter = Result<MarvelResponse.Container.Character?, Error>
-    typealias ResultForMarvel = Result<MarvelResponse, Error>
+    }    
 }
 
-// MARK: - Get character, image
+// MARK: - Get character / image
 extension MarvelRequest {
     
-    func character(searching query: String? = nil, at offset: Int, completion: @escaping (MarvelCharacter?) -> Void) {
+    func character(searching query: String?, at offset: Int, completion: @escaping (MarvelCharacter?) -> Void) {
         let url = makeURL(searching: query, offset: offset)
         
         getData(at: url) { result in
@@ -40,7 +36,6 @@ extension MarvelRequest {
                 print(error)
                 completion(nil)
             case .success(let data) :
-                print(data)
                 decode(marvel: data) { result in
                     
                     switch result {
@@ -59,7 +54,7 @@ extension MarvelRequest {
         guard
             let path = character?.thumbnail?.path,
             let extention = character?.thumbnail?.extension,
-            let url = URL(string: path + extention)
+            let url = URL(string: path + "." + extention)
         else {
             completion(nil)
             return
@@ -72,9 +67,32 @@ extension MarvelRequest {
         }
     }
 
+    func total(searching query: String?, completion: @escaping (MarvelCharacterTotal) -> Void) {
+        let url = makeURL(searching: query, offset: 0)
+        
+        getData(at: url) { result in
+            
+            switch result {
+            case .failure(let error):
+                print(error)
+                completion(0)
+            case .success(let data) :
+                decode(marvel: data) { result in
+                    
+                    switch result {
+                    case.failure(let error):
+                        print(error)
+                        completion(0)
+                    case.success(let response):
+                        completion(response.data?.total ?? 0)
+                    }
+                }
+            }
+        }
+    }
 }
 
-// MARK: - Get url, data, and decode
+// MARK: - Make url, get data, and decode
 extension MarvelRequest {
     
     private enum MarvelError: Error {
@@ -102,7 +120,7 @@ extension MarvelRequest {
         return components.url
     }
     
-    func getData(at url: URL?, completion: @escaping (Result<Data, Error>) -> Void) {
+    private func getData(at url: URL?, completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = url
         else {
             completion(.failure(MarvelError.badURL))
@@ -120,7 +138,7 @@ extension MarvelRequest {
         }.resume()
     }
     
-    func decode(marvel data: Data, completion: @escaping (ResultForMarvel) -> Void) {
+    private func decode(marvel data: Data, completion: @escaping (ResultForMarvel) -> Void) {
         do {
             let response = try JSONDecoder().decode(MarvelResponse.self, from: data)
             if response.code != 200 {
