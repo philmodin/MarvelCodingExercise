@@ -133,8 +133,8 @@ extension MarvelRequest {
                 URLQueryItem(name: "offset", value: String(offset)),
             ]
         
-        if let trimmedQuery = query?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmedQuery.isEmpty {
-            components.queryItems?.append(URLQueryItem(name: "nameStartsWith", value: trimmedQuery))
+        if let query = query {
+            components.queryItems?.append(URLQueryItem(name: "nameStartsWith", value: query))
         }
         return components.url
     }

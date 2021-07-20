@@ -16,7 +16,7 @@ class MarvelCache {
     init() {
         persistentContainer = appDelegate.persistentContainer
         context = persistentContainer.viewContext
-        fetch()
+        //fetch()
     }
             
     private(set) var characters = [Int: CharacterMO]()
@@ -26,10 +26,13 @@ class MarvelCache {
 // MARK: - Manipulate persistent data
 extension MarvelCache {
     
-    func fetch() {
+    func fetch(searching: String?) {
         let request: NSFetchRequest<CharacterMO> = CharacterMO.fetchRequest()
         let sort = NSSortDescriptor(key: #keyPath(CharacterMO.name), ascending: true)
         request.sortDescriptors = [sort]
+        if let query = searching {
+            request.predicate = NSPredicate(format: "name CONTAINS[cd] %@", query)
+        }
         do {
             let array = try context.fetch(request)
             characters = Dictionary(uniqueKeysWithValues: array.enumerated().map{ ($0,$1) })
@@ -80,8 +83,7 @@ extension MarvelCache {
     }
     
     func save() {
-        saveContext()
-        fetch()
+        saveContext()        
     }
     
 }

@@ -27,7 +27,11 @@ extension CharacterDetails {
     
     func assignProperties() {
         attributionBtn.title = character.attribution
-        bio.text = character.bio
+        if character.bio?.isEmpty ?? true {
+            bio.text = "no description available"
+        } else {
+            bio.text = character.bio
+        }
         if let imageData = character.image, let cImage = UIImage(data: imageData) { thumbnail.image = cImage }
         name.text = character.name
     }

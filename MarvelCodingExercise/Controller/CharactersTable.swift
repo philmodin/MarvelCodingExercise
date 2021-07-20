@@ -12,7 +12,7 @@ class CharactersTable: UITableViewController {
     @IBOutlet var attributionBtn: UIBarButtonItem!
     @IBOutlet var searchBar: UISearchBar!
     
-    let manager = MarvelManager(isApiAvailableForTest: false)
+    let manager = MarvelManager()
     let cellID = "Character Cell"
     
     override func viewDidLoad() {
@@ -23,7 +23,8 @@ class CharactersTable: UITableViewController {
     }
     
     private func startLoading(searching: String? = nil) {
-        manager.getCharacterCount { [weak self] in
+        print("startLoading \(searching ?? "no query")")
+        manager.getCharacterCount(searching: searching) { [weak self] in
             self?.reloadTable()
             self?.getVisibleRows { [weak self] rows in
                 for row in rows ?? [] {
@@ -51,7 +52,11 @@ extension CharactersTable: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        startLoading(searching: searchBar.text)
+        print("searchBarSearchButtonClicked \(searchBar.text ?? "nil")")
+        if let validSearch = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines), !validSearch.isEmpty {
+            print("validSearch \(validSearch)")
+            startLoading(searching: validSearch)
+        }
     }
 }
 

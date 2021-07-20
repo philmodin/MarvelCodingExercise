@@ -16,10 +16,11 @@ class MarvelManager {
     private let marvelCache = MarvelCache()
     private let marvelRequest = MarvelRequest()
     
-    init(isOnlineForTest: Bool? = nil, isApiAvailableForTest: Bool? = nil) {
+    init(testIsOnline: Bool? = nil, testIsApiAvailable: Bool? = nil, testDeleteAll: Bool = false) {
         reachabilityStart()
-        if let testOnline = isOnlineForTest { isOnline = testOnline }
-        if let testApiAvailable = isApiAvailableForTest { isApiAvailable = testApiAvailable }
+        if let isOnline = testIsOnline { self.isOnline = isOnline }
+        if let isApiAvailable = testIsApiAvailable { self.isApiAvailable = isApiAvailable }
+        if testDeleteAll { deleteAll() }
     }
     deinit {
         reachabilityStop()
@@ -44,22 +45,32 @@ class MarvelManager {
 extension MarvelManager {
     
     func getCharacterCount(searching: String? = nil, completed: @escaping () -> Void) {
+        print("getCharacterCount \(searching ?? "nil") \(searchQuery ?? "nil")")
+        if let query = searching, query == searchQuery {
+            print("exiting")
+            return
+        }
+        searchPriority += 1
+        let taskPriority = searchPriority
         total = nil
         characters = [:]
         
         searchQuery = searching
-        searchPriority += 1
         
         if !isOnline || !isApiAvailable {
-            migrateCharactersFromCache() { completed() }            
+            getCharactersFromCache() { completed() }            
         } else {
             marvelRequest.total(searching: searchQuery) { [weak self] count, attributionText in
-                self?.attributionText = attributionText
+                guard let self = self else { return }
+                print("taskPriority \(taskPriority) searchPriority \(self.searchPriority)")
+                guard taskPriority == self.searchPriority else { return }
+                
+                self.attributionText = attributionText
                 if count == nil {
-                    self?.isApiAvailable = false
-                    self?.migrateCharactersFromCache() { completed() }
+                    self.isApiAvailable = false
+                    self.getCharactersFromCache() { completed() }
                 } else {
-                    self?.total = count
+                    self.total = count
                     completed()
                 }
             }
@@ -67,11 +78,14 @@ extension MarvelManager {
     }
     
     func getCharacter(for row: Int, completed: @escaping () -> Void) {
+        let taskPriority = searchPriority
         if characters.keys.contains(row) || !isOnline || !isApiAvailable {
             completed()
         } else {
             characters.merge([row : nil]) { _, new in new }
             marvelRequest.character(searching: searchQuery, at: row) { [weak self] mChar in
+                guard taskPriority == self?.searchPriority else { return }
+                
                 if mChar == nil { self?.isApiAvailable = false }
                 if let characterMO = self?.marvelCache.fetchFirst(with: mChar?.id) {
                     self?.characters.merge([row : characterMO]) { _, new in new }
@@ -79,6 +93,7 @@ extension MarvelManager {
                 } else {
                     self?.marvelRequest.image(for: mChar) { [weak self] imageData in
                         self?.createCharacterMO(from: mChar, with: imageData)
+                        guard taskPriority == self?.searchPriority else { return }
                         if let characterMO = self?.marvelCache.fetchFirst(with: mChar?.id) {
                             self?.characters.merge([row : characterMO]) { _, new in new }
                         }
@@ -104,29 +119,27 @@ extension MarvelManager {
         )
     }
     
-    private func migrateCharactersFromCache(completed: @escaping () -> Void) {
-        marvelCache.fetch()
-        if marvelCache.characters.count > 0 {
-            characters = marvelCache.characters
-            total = characters.count
-            attributionText = characters.first?.value?.attribution
-            
-            completed()
-        } else {
+    private func getCharactersFromCache(completed: @escaping () -> Void) {
+        marvelCache.fetch(searching: searchQuery)
+        
+        if marvelCache.characters.count < 1, searchQuery == nil {
             importSampleCharacter { [weak self] in
                 guard let self = self
                 else {
                     completed()
                     return
                 }
-                self.marvelCache.fetch()
-                if self.marvelCache.characters.count > 0 {
-                    self.characters = self.marvelCache.characters
-                    self.total = self.characters.count
-                    self.attributionText = self.characters.first?.value?.attribution
-                }
+                self.marvelCache.fetch(searching: self.searchQuery)
+                self.characters = self.marvelCache.characters
+                self.total = self.characters.count
+                self.attributionText = self.characters.first?.value?.attribution
                 completed()
             }
+        } else {
+            characters = marvelCache.characters
+            total = characters.count
+            attributionText = characters.first?.value?.attribution
+            completed()
         }
     }
     

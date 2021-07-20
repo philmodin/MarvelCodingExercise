@@ -29,10 +29,10 @@ class MCETests: XCTestCase {
         let expect = expectation(description: "expect")
         let marvelManager = MarvelManager()
 
-        marvelManager.getCharacterCount {
+        marvelManager.getCharacterCount(searching: "spider") {
             marvelManager.getCharacter(for: 0) {
                 if let keyedCharacterMO = marvelManager.characters[0], let characterMO = keyedCharacterMO {
-                    XCTAssertEqual(characterMO.name, "3-D Man", characterMO.name ?? "No name found")
+                    XCTAssertEqual(characterMO.name, "Spider-dok", characterMO.name ?? "No name found")
                 } else {
                     XCTFail("characterMO was nil")
                 }
@@ -45,7 +45,7 @@ class MCETests: XCTestCase {
     
     func testGetCharacterApiUnavailable() {
         let expect = expectation(description: "expect")
-        let marvelManager = MarvelManager(isApiAvailableForTest: false)
+        let marvelManager = MarvelManager(testIsApiAvailable: false)
 
         marvelManager.getCharacterCount {
             marvelManager.getCharacter(for: 0) {
