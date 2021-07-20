@@ -10,6 +10,7 @@ import Foundation
 struct MarvelResponse: Decodable {
     let code: Int?
     let status: String?
+    let attributionText: String?
     let data: Container?
     struct Container: Decodable {
         let offset: Int?

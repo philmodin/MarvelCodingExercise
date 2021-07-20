@@ -9,12 +9,14 @@ import UIKit
 
 class CharactersTable: UITableViewController {
 
-    var manager = MarvelManager()
+    @IBOutlet var attributionBtn: UIBarButtonItem!
+    
+    let manager = MarvelManager(isApiAvailableForTest: false)
     let cellID = "Character Cell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.prefetchDataSource = self
+        tableView.prefetchDataSource = self        
         startLoading()
     }
     
@@ -37,6 +39,7 @@ extension CharactersTable {
     
     private func reloadTable() {
         DispatchQueue.main.async {
+            self.attributionBtn.title = self.manager.attribution
             self.tableView.isScrollEnabled = false
             self.tableView.reloadData()
             self.tableView.isScrollEnabled = true
@@ -147,5 +150,15 @@ extension CharactersTable {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+    }
+}
+
+// MARK: - IBActions
+extension CharactersTable {
+    
+    @IBAction func attributionBtnTapped(_ sender: UIBarButtonItem) {
+        if let url = URL(string: "http://marvel.com") {
+            UIApplication.shared.open(url)
+        }
     }
 }

@@ -25,18 +25,20 @@ class MarvelManager {
         reachabilityStop()
     }
     
+    private var attributionText: String?
     private var searchQuery: String?
     private var searchPriority = 0
     
     private var reachabilityCurrent: Reachability?
     private var reachabilityPrevious: Reachability.Connection?
     
-    private(set) var isOnline = false
     private(set) var isApiAvailable = true
+    private(set) var isOnline = false
     
     private(set) var total: MarvelCharacterTotal?
     private(set) var characters = [Int: CharacterMO?]()
-        
+    
+    var attribution: String { return attributionText ?? "" }
 }
 // MARK: - Provide character data
 extension MarvelManager {
@@ -51,7 +53,8 @@ extension MarvelManager {
         if !isOnline || !isApiAvailable {
             migrateCharactersFromCache() { completed() }            
         } else {
-            marvelRequest.total(searching: searchQuery) { [weak self] count in
+            marvelRequest.total(searching: searchQuery) { [weak self] count, attributionText in
+                self?.attributionText = attributionText
                 if count == nil {
                     self?.isApiAvailable = false
                     self?.migrateCharactersFromCache() { completed() }
@@ -93,6 +96,7 @@ extension MarvelManager {
     private func createCharacterMO(from mChar: MarvelCharacter?, with image: Data?) {
         marvelCache.addNewCharacter(
             with: mChar?.id,
+            attribution: attributionText,
             name: mChar?.name,
             description: mChar?.description,
             modified: mChar?.modifiedDate,
@@ -100,11 +104,13 @@ extension MarvelManager {
         )
     }
     
-    private func migrateCharactersFromCache(completed: @escaping () -> Void) {
+    private func migrateCharactersFromCache(completed: @escaping () -> Void) {print("migrateCharactersFromCache")
         marvelCache.fetch()
         if marvelCache.characters.count > 0 {
             characters = marvelCache.characters
             total = characters.count
+            attributionText = characters.first?.value?.attribution
+            
             completed()
         } else {
             importSampleCharacter { [weak self] in
@@ -117,6 +123,7 @@ extension MarvelManager {
                 if self.marvelCache.characters.count > 0 {
                     self.characters = self.marvelCache.characters
                     self.total = self.characters.count
+                    self.attributionText = self.characters.first?.value?.attribution
                 }
                 completed()
             }
@@ -124,7 +131,8 @@ extension MarvelManager {
     }
     
     private func importSampleCharacter(completed: @escaping () -> Void) {
-        marvelRequest.sample { [weak self] mC in
+        marvelRequest.sample { [weak self] mC, attributionText in
+            self?.attributionText = attributionText
             self?.marvelRequest.image(for: mC) { [weak self] imageData in
                 self?.createCharacterMO(from: mC, with: imageData)
                 completed()

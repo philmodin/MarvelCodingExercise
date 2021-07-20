@@ -50,12 +50,18 @@
                     </tableView>
                     <toolbarItems>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="eVo-fC-QWf"/>
-                        <barButtonItem title="Data provided by Marvel. © 2014 Marvel" width="42" id="PJF-Ol-OCF">
+                        <barButtonItem width="42" id="PJF-Ol-OCF">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="attributionBtnTapped:" destination="SUB-fY-Hjh" id="SzO-sV-Jyu"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="2eM-Wn-Et3"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Marvel Characters" id="m9m-od-D3c"/>
+                    <connections>
+                        <outlet property="attributionBtn" destination="PJF-Ol-OCF" id="V6B-u4-ihv"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vuF-TI-1DP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

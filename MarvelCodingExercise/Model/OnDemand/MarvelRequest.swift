@@ -9,6 +9,7 @@ import CryptoKit
 import Foundation
 
 struct MarvelRequest {
+    
     let host = "gateway.marvel.com"
     let endpointCharacters = "/v1/public/characters"
     let timestamp = Date().description(with: .current)
@@ -20,7 +21,7 @@ struct MarvelRequest {
         let privateKey = getApiKey(for: .privateKey)
         apiKey = publicKey
         hash = hashMD5(from: timestamp + privateKey + publicKey)
-    }    
+    }
 }
 
 // MARK: - Get character / image
@@ -67,7 +68,7 @@ extension MarvelRequest {
         }
     }
 
-    func sample(completion: @escaping (MarvelCharacter?) -> Void) {
+    func sample(completion: @escaping (MarvelCharacter?, String?) -> Void) {
         let fileName = "CharacterSample.json"
         guard let url = Bundle.main.url(forResource: fileName, withExtension: nil)
         else { fatalError("Failed to locate \(fileName) in bundle.") }
@@ -78,14 +79,14 @@ extension MarvelRequest {
             switch result {
             case.failure(let error):
                 print(error)
-                completion(nil)
+                completion(nil, nil)
             case.success(let response):
-                completion(response.data?.results?.first)
+                completion(response.data?.results?.first, response.attributionText)
             }
         }
     }
     
-    func total(searching query: String?, completion: @escaping (MarvelCharacterTotal?) -> Void) {
+    func total(searching query: String?, completion: @escaping (MarvelCharacterTotal?, String?) -> Void) {
         let url = makeURL(searching: query, offset: 0)
         
         getData(at: url) { result in
@@ -93,16 +94,16 @@ extension MarvelRequest {
             switch result {
             case .failure(let error):
                 print(error)
-                completion(nil)
+                completion(nil, nil)
             case .success(let data) :
                 decode(marvel: data) { result in
                     
                     switch result {
                     case.failure(let error):
                         print(error)
-                        completion(nil)
+                        completion(nil, nil)
                     case.success(let response):
-                        completion(response.data?.total ?? 0)
+                        completion(response.data?.total ?? 0, response.attributionText)
                     }
                 }
             }

@@ -54,12 +54,13 @@ extension MarvelCache {
         return character
     }
     
-    func addNewCharacter(with id: Int64?, name: String?, description: String?, modified: Date?, image: Data?, urls: [MarvelCharacter.URL]?) {
+    func addNewCharacter(with id: Int64?, attribution: String?, name: String?, description: String?, modified: Date?, image: Data?, urls: [MarvelCharacter.URL]?) {
         guard let id = id
         else { return }
         
         let newCharacter = CharacterMO(context: context)
         newCharacter.id = id
+        newCharacter.attribution = attribution
         newCharacter.fetched = Date()
         newCharacter.name = name
         newCharacter.bio = description

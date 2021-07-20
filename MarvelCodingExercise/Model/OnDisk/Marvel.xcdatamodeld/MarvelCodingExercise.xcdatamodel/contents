@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20F71" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Character" representedClassName="CharacterMO" syncable="YES" codeGenerationType="class">
+        <attribute name="attribution" optional="YES" attributeType="String"/>
         <attribute name="bio" optional="YES" attributeType="String"/>
         <attribute name="fetched" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -15,7 +16,7 @@
         <relationship name="character" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Character" inverseName="urls" inverseEntity="Character"/>
     </entity>
     <elements>
-        <element name="Character" positionX="-63" positionY="-18" width="128" height="134"/>
+        <element name="Character" positionX="-63" positionY="-18" width="128" height="149"/>
         <element name="Url" positionX="-54" positionY="27" width="128" height="74"/>
     </elements>
 </model>
