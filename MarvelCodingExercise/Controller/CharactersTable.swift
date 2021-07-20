@@ -148,8 +148,12 @@ extension CharactersTable: UITableViewDataSourcePrefetching {
 extension CharactersTable {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        if let destination = segue.destination as? CharacterDetails,
+           let indexPath = tableView.indexPathForSelectedRow,
+           let character = manager.characters[indexPath.row]
+        {
+            destination.character = character
+        }
     }
 }
 

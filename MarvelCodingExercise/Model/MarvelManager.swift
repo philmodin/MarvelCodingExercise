@@ -104,7 +104,7 @@ extension MarvelManager {
         )
     }
     
-    private func migrateCharactersFromCache(completed: @escaping () -> Void) {print("migrateCharactersFromCache")
+    private func migrateCharactersFromCache(completed: @escaping () -> Void) {
         marvelCache.fetch()
         if marvelCache.characters.count > 0 {
             characters = marvelCache.characters

@@ -9,21 +9,41 @@ import UIKit
 
 class CharacterDetails: UIViewController {
 
+    @IBOutlet var attributionBtn: UIBarButtonItem!
+    @IBOutlet var bio: UILabel!
+    @IBOutlet var thumbnail: UIImageView!
+    @IBOutlet var name: UILabel!
+    
+    var character: CharacterMO!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        assignProperties()
+    }
+}
 
-        // Do any additional setup after loading the view.
+// MARK: - Setup
+extension CharacterDetails {
+    
+    func assignProperties() {
+        attributionBtn.title = character.attribution
+        bio.text = character.bio
+        if let imageData = character.image, let cImage = UIImage(data: imageData) { thumbnail.image = cImage }
+        name.text = character.name
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func buildArrayOfLinks() {
+        
     }
-    */
+}
 
+
+// MARK: - IBActions
+extension CharacterDetails {
+    
+    @IBAction func attributionBtnTapped(_ sender: UIBarButtonItem) {
+        if let url = URL(string: "http://marvel.com") {
+            UIApplication.shared.open(url)
+        }
+    }
 }
