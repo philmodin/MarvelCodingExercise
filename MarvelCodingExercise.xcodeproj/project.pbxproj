@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8614867826A62B8600512DB9 /* ExtensionInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8614867726A62B8600512DB9 /* ExtensionInt.swift */; };
 		867E49DB26A2953E00EA02FA /* MarvelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DA26A2953E00EA02FA /* MarvelManager.swift */; };
 		867E49DD26A2B8EA00EA02FA /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DC26A2B8EA00EA02FA /* Reachability.swift */; };
 		867E49E026A2BDCF00EA02FA /* MarvelCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E49DF26A2BDCF00EA02FA /* MarvelCache.swift */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8614867726A62B8600512DB9 /* ExtensionInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionInt.swift; sourceTree = "<group>"; };
 		867E49DA26A2953E00EA02FA /* MarvelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelManager.swift; sourceTree = "<group>"; };
 		867E49DC26A2B8EA00EA02FA /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		867E49DF26A2BDCF00EA02FA /* MarvelCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCache.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 		867E49DE26A2B8EF00EA02FA /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				8614867726A62B8600512DB9 /* ExtensionInt.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -158,9 +161,9 @@
 			isa = PBXGroup;
 			children = (
 				867E49DA26A2953E00EA02FA /* MarvelManager.swift */,
+				867E49DC26A2B8EA00EA02FA /* Reachability.swift */,
 				867E49E326A39E0800EA02FA /* OnDisk */,
 				867E49E426A39E1700EA02FA /* OnDemand */,
-				867E49DC26A2B8EA00EA02FA /* Reachability.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				868D136226A207BB00E9E5D0 /* Marvel.xcdatamodeld in Sources */,
 				867E49E826A5277000EA02FA /* CharacterDetails.swift in Sources */,
 				867E49E026A2BDCF00EA02FA /* MarvelCache.swift in Sources */,
+				8614867826A62B8600512DB9 /* ExtensionInt.swift in Sources */,
 				868D138526A25DE700E9E5D0 /* MarvelRequest.swift in Sources */,
 				868D135826A207BB00E9E5D0 /* AppDelegate.swift in Sources */,
 				867E49DB26A2953E00EA02FA /* MarvelManager.swift in Sources */,

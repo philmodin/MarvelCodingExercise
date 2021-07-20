@@ -14,7 +14,7 @@ class CharactersTable: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //manager.deleteAll()
+        tableView.prefetchDataSource = self
         startLoading()
     }
     
@@ -30,10 +30,16 @@ class CharactersTable: UITableViewController {
             }            
         }
     }
+}
+
+// MARK: - Table view display
+extension CharactersTable {
     
     private func reloadTable() {
         DispatchQueue.main.async {
+            self.tableView.isScrollEnabled = false
             self.tableView.reloadData()
+            self.tableView.isScrollEnabled = true
         }
     }
     
@@ -45,6 +51,7 @@ class CharactersTable: UITableViewController {
             }
         }
     }
+    
     private func getVisibleRows(completion: @escaping([Int]?) -> Void) {
         DispatchQueue.main.async { [weak self] in
             if let indexPaths = self?.tableView.indexPathsForVisibleRows {
@@ -56,6 +63,7 @@ class CharactersTable: UITableViewController {
         }
     }
 }
+
 // MARK: - Table view data source
 extension CharactersTable {
 
@@ -65,11 +73,11 @@ extension CharactersTable {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
-        var name = "loading"
+        var name = "\(indexPath.row) loading"
         var image = UIImage(systemName: "photo") ?? UIImage() // TODO placeholder image
-        if let c = manager.characters[indexPath.row], let cName = c.name {
-            name = cName
-            if let cImageData = c.image, let cImage = UIImage(data: cImageData) {
+        if let c = manager.characters[indexPath.row], let cName = c?.name {
+            name = indexPath.row.description + cName
+            if let cImageData = c?.image, let cImage = UIImage(data: cImageData) {
                 image = cImage
             }
         }
@@ -78,7 +86,59 @@ extension CharactersTable {
         
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        var status = ""
+        if !manager.isOnline || !manager.isApiAvailable { status = " (offline)" }
+        if let total = manager.total {
+            return "\(total.toDecimalString()) characters \(status)"
+        } else {
+            return "loading"
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let header = view as? UITableViewHeaderFooterView {
+            if !UIAccessibility.isReduceTransparencyEnabled {
+                header.tintColor = .clear
+                
+                let blurEffectViewTag = 8105
+                if !header.subviews.contains(where: { $0.tag == blurEffectViewTag }) {
+                    let blurEffect = UIBlurEffect(style: .regular)
+                    let blurEffectView = UIVisualEffectView(effect: blurEffect)
+                    blurEffectView.tag = blurEffectViewTag
+                    blurEffectView.frame = header.bounds
+                    blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                    header.insertSubview(blurEffectView, at: 0)
+                }
+            } else {
+                header.tintColor = .none
+            }
+            header.contentView.backgroundColor = .clear
+            header.textLabel?.textAlignment = NSTextAlignment.center
+        }
+    }
 }
+
+// MARK: - Prefetch (for Infinite Scrolling)
+extension CharactersTable: UITableViewDataSourcePrefetching {
+    
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+                
+        for indexPath in indexPaths {
+            if !isRowLoaded(for: indexPath) {
+                manager.getCharacter(for: indexPath.row) { [weak self] in
+                    self?.reloadRowIfVisible(at: indexPath.row)
+                }
+            }
+        }
+    }
+    
+    private func isRowLoaded(for indexPath: IndexPath) -> Bool {
+        return manager.characters.keys.contains(indexPath.row)
+    }
+}
+
 // MARK: - Navigation
 extension CharactersTable {
     

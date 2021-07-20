@@ -67,7 +67,7 @@ extension MarvelRequest {
         }
     }
 
-    func total(searching query: String?, completion: @escaping (MarvelCharacterTotal) -> Void) {
+    func total(searching query: String?, completion: @escaping (MarvelCharacterTotal?) -> Void) {
         let url = makeURL(searching: query, offset: 0)
         
         getData(at: url) { result in
@@ -75,14 +75,14 @@ extension MarvelRequest {
             switch result {
             case .failure(let error):
                 print(error)
-                completion(0)
+                completion(nil)
             case .success(let data) :
                 decode(marvel: data) { result in
                     
                     switch result {
                     case.failure(let error):
                         print(error)
-                        completion(0)
+                        completion(nil)
                     case.success(let response):
                         completion(response.data?.total ?? 0)
                     }

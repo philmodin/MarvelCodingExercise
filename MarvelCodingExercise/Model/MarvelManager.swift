@@ -16,8 +16,10 @@ class MarvelManager {
     private let marvelCache = MarvelCache()
     private let marvelRequest = MarvelRequest()
     
-    init() {
+    init(isOnlineForTest: Bool? = nil, isApiAvailableForTest: Bool? = nil) {
         reachabilityStart()
+        if let testOnline = isOnlineForTest { isOnline = testOnline }
+        if let testApiAvailable = isApiAvailableForTest { isApiAvailable = testApiAvailable }
     }
     deinit {
         reachabilityStop()
@@ -29,8 +31,11 @@ class MarvelManager {
     private var reachabilityCurrent: Reachability?
     private var reachabilityPrevious: Reachability.Connection?
     
+    private(set) var isOnline = false
+    private(set) var isApiAvailable = true
+    
     private(set) var total: MarvelCharacterTotal?
-    private(set) var characters = [Int: CharacterMO]()
+    private(set) var characters = [Int: CharacterMO?]()
         
 }
 // MARK: - Provide character data
@@ -43,17 +48,30 @@ extension MarvelManager {
         searchQuery = searching
         searchPriority += 1
         
-        marvelRequest.total(searching: searchQuery) { [weak self] count in
-            self?.total = count
+        if !isOnline || !isApiAvailable {
+            migrateCharactersFromCache()
             completed()
+        } else {
+            marvelRequest.total(searching: searchQuery) { [weak self] count in
+                if count == nil {
+                    self?.isApiAvailable = false
+                    self?.migrateCharactersFromCache()
+                    completed()
+                } else {
+                    self?.total = count
+                    completed()
+                }
+            }
         }
     }
     
     func getCharacter(for row: Int, completed: @escaping () -> Void) {
-        if characters[row] != nil {
+        if characters.keys.contains(row) || !isOnline || !isApiAvailable {
             completed()
         } else {
-            marvelRequest.character(searching: searchQuery, at: row) { [weak self] mChar  in
+            characters.merge([row : nil]) { _, new in new }
+            marvelRequest.character(searching: searchQuery, at: row) { [weak self] mChar in
+                if mChar == nil { self?.isApiAvailable = false }
                 if let characterMO = self?.marvelCache.fetchFirst(with: mChar?.id) {
                     self?.characters.merge([row : characterMO]) { _, new in new }
                     completed()
@@ -62,10 +80,8 @@ extension MarvelManager {
                         self?.createCharacterMO(from: mChar, with: imageData)
                         if let characterMO = self?.marvelCache.fetchFirst(with: mChar?.id) {
                             self?.characters.merge([row : characterMO]) { _, new in new }
-                            completed()
-                        } else {
-                            completed()
                         }
+                        completed()
                     }
                 }
             }
@@ -85,6 +101,12 @@ extension MarvelManager {
             image: image, urls: mChar?.urls
         )
     }
+    
+    private func migrateCharactersFromCache() {
+        marvelCache.fetch()
+        characters = marvelCache.characters
+        total = characters.count        
+    }
 }
 // MARK: - Check internet connectivity via Reachability
 extension MarvelManager {
@@ -96,11 +118,13 @@ extension MarvelManager {
             case .unavailable:
                 if reachabilityPrevious != .unavailable {
                     reachabilityPrevious = reachability.connection
+                    isOnline = false
                     // TODO: change source
                 }
             case .cellular, .wifi:
                 if reachabilityPrevious == .unavailable {
                     reachabilityPrevious = reachability.connection
+                    isOnline = true
                     // TODO: change source
                 }
             }
@@ -109,6 +133,7 @@ extension MarvelManager {
     
     private func reachabilityStart() {
         reachabilityCurrent = try? Reachability(hostname: marvelRequest.host)
+        if reachabilityCurrent?.connection != .unavailable { isOnline = true }
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(_:)), name: .reachabilityChanged, object: reachabilityCurrent)
         do {
             try reachabilityCurrent?.startNotifier()

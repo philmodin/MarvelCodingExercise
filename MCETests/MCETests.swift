@@ -12,8 +12,8 @@ class MCETests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        let marvelManager = MarvelManager()
-        marvelManager.deleteAll()
+        //let marvelManager = MarvelManager()
+        //marvelManager.deleteAll()
     }
 
     override func tearDownWithError() throws {
@@ -29,14 +29,37 @@ class MCETests: XCTestCase {
         let expect = expectation(description: "expect")
         let marvelManager = MarvelManager()
 
-        marvelManager.getCharacter(for: 0) {
-            if let characterMO = marvelManager.characters[0] {
-                XCTAssertEqual(characterMO.name, "3-D Man", characterMO.name ?? "No name found")
-            } else {
-                XCTFail("characterMO was nil")
+        marvelManager.getCharacterCount {
+            print(marvelManager.total)
+            marvelManager.getCharacter(for: 0) {
+                if let keyedCharacterMO = marvelManager.characters[0], let characterMO = keyedCharacterMO {
+                    XCTAssertEqual(characterMO.name, "3-D Man", characterMO.name ?? "No name found")
+                } else {
+                    XCTFail("characterMO was nil")
+                }
+                expect.fulfill()
+            }  
+        }
+              
+        waitForExpectations(timeout: 5)
+    }
+    
+    func testGetCharacterApiUnavailable() {
+        let expect = expectation(description: "expect")
+        let marvelManager = MarvelManager(isApiAvailableForTest: false)
+
+        marvelManager.getCharacterCount {
+            print(marvelManager.total)
+            marvelManager.getCharacter(for: 0) {
+                if let keyedCharacterMO = marvelManager.characters[0], let characterMO = keyedCharacterMO {
+                    XCTAssertEqual(characterMO.name, "3-D Man", characterMO.name ?? "No name found")
+                } else {
+                    XCTFail("characterMO was nil")
+                }
+                expect.fulfill()
             }
-            expect.fulfill()
-        }        
+        }
+              
         waitForExpectations(timeout: 5)
     }
 
