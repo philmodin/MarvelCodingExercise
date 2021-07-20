@@ -67,6 +67,24 @@ extension MarvelRequest {
         }
     }
 
+    func sample(completion: @escaping (MarvelCharacter?) -> Void) {
+        let fileName = "CharacterSample.json"
+        guard let url = Bundle.main.url(forResource: fileName, withExtension: nil)
+        else { fatalError("Failed to locate \(fileName) in bundle.") }
+        guard let data = try? Data(contentsOf: url)
+        else { fatalError("Failed to load \(fileName) from bundle.") }
+        
+        decode(marvel: data) { result in
+            switch result {
+            case.failure(let error):
+                print(error)
+                completion(nil)
+            case.success(let response):
+                completion(response.data?.results?.first)
+            }
+        }
+    }
+    
     func total(searching query: String?, completion: @escaping (MarvelCharacterTotal?) -> Void) {
         let url = makeURL(searching: query, offset: 0)
         

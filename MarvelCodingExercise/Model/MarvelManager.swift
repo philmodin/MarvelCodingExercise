@@ -49,14 +49,13 @@ extension MarvelManager {
         searchPriority += 1
         
         if !isOnline || !isApiAvailable {
-            migrateCharactersFromCache()
-            completed()
+            
+            
         } else {
             marvelRequest.total(searching: searchQuery) { [weak self] count in
                 if count == nil {
                     self?.isApiAvailable = false
-                    self?.migrateCharactersFromCache()
-                    completed()
+                    self?.migrateCharactersFromCache() { completed() }
                 } else {
                     self?.total = count
                     completed()
@@ -92,7 +91,7 @@ extension MarvelManager {
         marvelCache.flushContext()
     }
     
-    private func createCharacterMO(from mChar: MarvelCharacter?, with image: Data? = nil) {
+    private func createCharacterMO(from mChar: MarvelCharacter?, with image: Data?) {
         marvelCache.addNewCharacter(
             with: mChar?.id,
             name: mChar?.name,
@@ -102,10 +101,36 @@ extension MarvelManager {
         )
     }
     
-    private func migrateCharactersFromCache() {
+    private func migrateCharactersFromCache(completed: @escaping () -> Void) {
         marvelCache.fetch()
-        characters = marvelCache.characters
-        total = characters.count        
+        if marvelCache.characters.count > 0 {
+            characters = marvelCache.characters
+            total = characters.count
+            completed()
+        } else {
+            importSampleCharacter { [weak self] in
+                guard let self = self
+                else {
+                    completed()
+                    return
+                }
+                self.marvelCache.fetch()
+                if self.marvelCache.characters.count > 0 {
+                    self.characters = self.marvelCache.characters
+                    self.total = self.characters.count
+                }
+                completed()
+            }
+        }
+    }
+    
+    private func importSampleCharacter(completed: @escaping () -> Void) {
+        marvelRequest.sample { [weak self] mC in
+            self?.marvelRequest.image(for: mC) { [weak self] imageData in
+                self?.createCharacterMO(from: mC, with: imageData)
+                completed()
+            }
+        }
     }
 }
 // MARK: - Check internet connectivity via Reachability

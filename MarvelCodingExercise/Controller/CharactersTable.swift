@@ -73,10 +73,10 @@ extension CharactersTable {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
-        var name = "\(indexPath.row) loading"
+        var name = "loading"
         var image = UIImage(systemName: "photo") ?? UIImage() // TODO placeholder image
         if let c = manager.characters[indexPath.row], let cName = c?.name {
-            name = indexPath.row.description + cName
+            name = cName
             if let cImageData = c?.image, let cImage = UIImage(data: cImageData) {
                 image = cImage
             }
@@ -91,7 +91,9 @@ extension CharactersTable {
         var status = ""
         if !manager.isOnline || !manager.isApiAvailable { status = " (offline)" }
         if let total = manager.total {
-            return "\(total.toDecimalString()) characters \(status)"
+            var characters = "characters"
+            if total == 1 { characters = "character" }
+            return "\(total.toDecimalString()) \(characters)\(status)"
         } else {
             return "loading"
         }
@@ -124,7 +126,7 @@ extension CharactersTable {
 extension CharactersTable: UITableViewDataSourcePrefetching {
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-                
+        print("prefetchRowsAt \(indexPaths)")
         for indexPath in indexPaths {
             if !isRowLoaded(for: indexPath) {
                 manager.getCharacter(for: indexPath.row) { [weak self] in
