@@ -10,13 +10,15 @@ import UIKit
 class CharactersTable: UITableViewController {
 
     @IBOutlet var attributionBtn: UIBarButtonItem!
+    @IBOutlet var searchBar: UISearchBar!
     
     let manager = MarvelManager(isApiAvailableForTest: false)
     let cellID = "Character Cell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.prefetchDataSource = self        
+        tableView.prefetchDataSource = self
+        searchBar.delegate = self
         startLoading()
     }
     
@@ -31,6 +33,25 @@ class CharactersTable: UITableViewController {
                 }
             }            
         }
+    }
+}
+
+// MARK: - Search
+extension CharactersTable: UISearchBarDelegate {
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = nil
+        searchBar.setShowsCancelButton(false, animated: true)
+        searchBar.endEditing(true)
+        startLoading()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        startLoading(searching: searchBar.text)
     }
 }
 
