@@ -49,8 +49,7 @@ extension MarvelManager {
         searchPriority += 1
         
         if !isOnline || !isApiAvailable {
-            
-            
+            migrateCharactersFromCache() { completed() }            
         } else {
             marvelRequest.total(searching: searchQuery) { [weak self] count in
                 if count == nil {

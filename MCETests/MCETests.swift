@@ -30,7 +30,6 @@ class MCETests: XCTestCase {
         let marvelManager = MarvelManager()
 
         marvelManager.getCharacterCount {
-            print(marvelManager.total)
             marvelManager.getCharacter(for: 0) {
                 if let keyedCharacterMO = marvelManager.characters[0], let characterMO = keyedCharacterMO {
                     XCTAssertEqual(characterMO.name, "3-D Man", characterMO.name ?? "No name found")
@@ -49,7 +48,6 @@ class MCETests: XCTestCase {
         let marvelManager = MarvelManager(isApiAvailableForTest: false)
 
         marvelManager.getCharacterCount {
-            print(marvelManager.total)
             marvelManager.getCharacter(for: 0) {
                 if let keyedCharacterMO = marvelManager.characters[0], let characterMO = keyedCharacterMO {
                     XCTAssertEqual(characterMO.name, "3-D Man", characterMO.name ?? "No name found")
@@ -59,7 +57,7 @@ class MCETests: XCTestCase {
                 expect.fulfill()
             }
         }
-              
+
         waitForExpectations(timeout: 5)
     }
 
