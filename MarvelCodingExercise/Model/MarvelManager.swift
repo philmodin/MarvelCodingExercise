@@ -45,9 +45,7 @@ class MarvelManager {
 extension MarvelManager {
     
     func getCharacterCount(searching: String? = nil, completed: @escaping () -> Void) {
-        print("getCharacterCount \(searching ?? "nil") \(searchQuery ?? "nil")")
         if let query = searching, query == searchQuery {
-            print("exiting")
             return
         }
         searchPriority += 1
@@ -62,7 +60,6 @@ extension MarvelManager {
         } else {
             marvelRequest.total(searching: searchQuery) { [weak self] count, attributionText in
                 guard let self = self else { return }
-                print("taskPriority \(taskPriority) searchPriority \(self.searchPriority)")
                 guard taskPriority == self.searchPriority else { return }
                 
                 self.attributionText = attributionText

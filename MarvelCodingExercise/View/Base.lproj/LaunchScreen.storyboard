@@ -25,7 +25,7 @@
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" name="AccentColor"/>
+                        <color key="backgroundColor" name="Marvel"/>
                         <constraints>
                             <constraint firstItem="gTK-78-zGY" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Xqk-Fi-ROP"/>
                             <constraint firstItem="gTK-78-zGY" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="qa0-iF-XqX"/>
@@ -38,7 +38,7 @@
         </scene>
     </scenes>
     <resources>
-        <namedColor name="AccentColor">
+        <namedColor name="Marvel">
             <color red="0.92900002002716064" green="0.11400000005960464" blue="0.14100000262260437" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>

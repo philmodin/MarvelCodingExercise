@@ -12,6 +12,7 @@ class CharacterDetails: UIViewController {
     @IBOutlet var attributionBtn: UIBarButtonItem!
     @IBOutlet var bio: UILabel!
     @IBOutlet var thumbnail: UIImageView!
+    @IBOutlet var thumbnailHeight: NSLayoutConstraint!
     @IBOutlet var name: UILabel!
     
     var character: CharacterMO!
@@ -27,17 +28,26 @@ extension CharacterDetails {
     
     func assignProperties() {
         attributionBtn.title = character.attribution
+        name.text = character.name
+        
         if character.bio?.isEmpty ?? true {
             bio.text = "no description available"
         } else {
             bio.text = character.bio
         }
-        if let imageData = character.image, let cImage = UIImage(data: imageData) { thumbnail.image = cImage }
-        name.text = character.name
+        
+        var image = UIImage.placeholder
+        if let imageData = character.image, let cImage = UIImage(data: imageData) { image = cImage }
+        thumbnail.image = image
+        thumbnail.layoutIfNeeded()
+        let ratio = image.size.width / image.size.height
+        let imageHeight = thumbnail.frame.width / ratio
+        thumbnailHeight.constant = imageHeight
+        thumbnail.layoutIfNeeded()
     }
     
     func buildArrayOfLinks() {
-        
+        //TODO
     }
 }
 

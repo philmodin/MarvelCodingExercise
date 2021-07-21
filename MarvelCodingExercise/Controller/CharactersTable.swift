@@ -12,7 +12,7 @@ class CharactersTable: UITableViewController {
     @IBOutlet var attributionBtn: UIBarButtonItem!
     @IBOutlet var searchBar: UISearchBar!
     
-    let manager = MarvelManager()
+    let manager = MarvelManager(testIsApiAvailable: false)
     let cellID = "Character Cell"
     
     override func viewDidLoad() {
@@ -23,7 +23,6 @@ class CharactersTable: UITableViewController {
     }
     
     private func startLoading(searching: String? = nil) {
-        print("startLoading \(searching ?? "no query")")
         manager.getCharacterCount(searching: searching) { [weak self] in
             self?.reloadTable()
             self?.getVisibleRows { [weak self] rows in
@@ -52,9 +51,7 @@ extension CharactersTable: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        print("searchBarSearchButtonClicked \(searchBar.text ?? "nil")")
         if let validSearch = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines), !validSearch.isEmpty {
-            print("validSearch \(validSearch)")
             startLoading(searching: validSearch)
         }
     }
@@ -103,7 +100,7 @@ extension CharactersTable {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
         var name = "loading"
-        var image = UIImage(systemName: "photo") ?? UIImage() // TODO placeholder image
+        var image = UIImage(systemName: "photo") ?? UIImage.placeholder
         if let c = manager.characters[indexPath.row], let cName = c?.name {
             name = cName
             if let cImageData = c?.image, let cImage = UIImage(data: cImageData) {
@@ -155,7 +152,6 @@ extension CharactersTable {
 extension CharactersTable: UITableViewDataSourcePrefetching {
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        print("prefetchRowsAt \(indexPaths)")
         for indexPath in indexPaths {
             if !isRowLoaded(for: indexPath) {
                 manager.getCharacter(for: indexPath.row) { [weak self] in
