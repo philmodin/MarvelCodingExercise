@@ -187,10 +187,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 868D136B26A207BE00E9E5D0 /* Build configuration list for PBXNativeTarget "MarvelCodingExercise" */;
 			buildPhases = (
+				868D137F26A24D4D00E9E5D0 /* Generate Keys.plist from template */,
 				868D135026A207BB00E9E5D0 /* Sources */,
 				868D135126A207BB00E9E5D0 /* Frameworks */,
 				868D135226A207BB00E9E5D0 /* Resources */,
-				868D137F26A24D4D00E9E5D0 /* Generate Keys.plist from template */,
 			);
 			buildRules = (
 			);
