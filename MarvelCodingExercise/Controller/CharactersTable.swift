@@ -12,7 +12,7 @@ class CharactersTable: UITableViewController {
     @IBOutlet var attributionBtn: UIBarButtonItem!
     @IBOutlet var searchBar: UISearchBar!
     
-    let manager = MarvelManager(testIsApiAvailable: false)
+    let manager = MarvelManager()
     let cellID = "Character Cell"
     
     override func viewDidLoad() {
